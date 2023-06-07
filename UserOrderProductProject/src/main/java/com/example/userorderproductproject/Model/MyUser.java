@@ -2,6 +2,7 @@ package com.example.userorderproductproject.Model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +26,16 @@ public class MyUser implements UserDetails {
     @NotEmpty
     @Column(columnDefinition = "varchar(25) not null")
     private String username;
-    @NotEmpty
+
+    @NotEmpty(message = "The Password can Not be Empty")
+    //  @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")
     private String password;
+
     @NotEmpty
-    @Column(columnDefinition = "varchar(20) not null check role='customer' or role='admin'")
+    @Column(columnDefinition = "varchar(20) not null check (role='custmer' or role='admin')")
     private String role;
 
+   //ONE-Many
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "myUser")
     private Set <MyOrder> myorderSet;
 

@@ -16,11 +16,11 @@ public class ProductService {
     public List<Product> getAllProduct(){
         return productRepository.findAll();
     }
-    public Product addProduct(Product product ) {
-        return productRepository.save(product);
+    public void addProduct(Product product ) {
+     productRepository.save(product);
     }
 
-    public Product updateProduct(Product product, Integer id) {
+    public void updateProduct(Product product, Integer id) {
         Product updatedProduct= productRepository.findProductById(id);
 
         if (updatedProduct == null) {
@@ -29,7 +29,7 @@ public class ProductService {
         updatedProduct.setName(product.getName());
         updatedProduct.setOrder(product.getOrder());
         updatedProduct.setPrice(product.getPrice());
-        return updatedProduct;
+      productRepository.save(updatedProduct);
     }
     public void deleteProduct(Integer id) {
         Product product  = productRepository.findProductById(id);
@@ -38,4 +38,12 @@ public class ProductService {
         }
         productRepository.delete(product);
     }
+    //Get Product ById
+    public Product findProductById(Integer id){
+        Product product1=productRepository.findProductById(id);
+        if(product1==null){
+            throw new ApiExeption("Product Not Found, Try another ID!");
+        }
+        return product1;
+}
 }

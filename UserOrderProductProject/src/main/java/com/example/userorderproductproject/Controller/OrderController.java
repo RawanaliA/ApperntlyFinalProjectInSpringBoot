@@ -18,6 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService ;
+    @GetMapping("/getAll")
+    public ResponseEntity getAllOrders(){
+        List<MyOrder> myOrders=orderService.getAllOrders();
+        return ResponseEntity.status(200).body(myOrders);
+    }
     @GetMapping("/get")
     public ResponseEntity getAllOrder(@AuthenticationPrincipal MyUser myUser){
         List<MyOrder> myOrders=orderService.getallOrder(myUser.getId());
@@ -26,26 +31,30 @@ public class OrderController {
 
 
     @PostMapping("/add")
-    public ResponseEntity addOrder(@AuthenticationPrincipal MyUser myUser,@RequestBody MyOrder myOrder , Product product){
-        orderService.addOrder(myUser.getId(),myOrder,product);
-        return ResponseEntity.status(200).body("Product added");
+    public ResponseEntity addOrder(@AuthenticationPrincipal MyUser myUser,@RequestBody MyOrder myOrder ){
+        orderService.addOrder(myUser.getId(),myOrder);
+        return ResponseEntity.status(200).body("Order added");
     }
-
 
     @PutMapping("/update/{id}")
     public ResponseEntity updateOrder( @AuthenticationPrincipal MyUser myUser,@RequestBody MyOrder myOrder, @PathVariable Integer id){
-        orderService.updateOrder(myOrder,id, myOrder.getId());
-        return ResponseEntity.status(200).body("Product Updated");
+        orderService.updateOrder(myOrder,id, myUser.getId());
+        return ResponseEntity.status(200).body("Order Updated");
     }
     @PutMapping("/change/{myOrderId}/{status}")
-    public ResponseEntity changeStatus( @RequestBody MyOrder myOrder, @PathVariable Integer myOrderId,String status){
-        orderService.changeStatus(myOrder,myOrderId,status);
-        return ResponseEntity.status(200).body("Todo Update it");
+    public ResponseEntity changeStatus( @AuthenticationPrincipal MyUser myUser, @PathVariable Integer myOrderId,@PathVariable String status){
+        orderService.changeStatus(myUser.getId(), myOrderId,status);
+        return ResponseEntity.status(200).body("Status Update it");
     }
 
     @DeleteMapping("/delete/{id}/{orderId}")
     public ResponseEntity deleteOrder(@PathVariable Integer id,Integer orderId){
         orderService.deleteOrder(id,orderId);
-        return ResponseEntity.status(200).body("Company deleted");
+        return ResponseEntity.status(200).body("Order deleted");
+    }
+    @GetMapping("/getByid/{id}")
+    public ResponseEntity findById(@PathVariable Integer id){
+        MyOrder myOrder = orderService.findOrderById(id);
+        return ResponseEntity.status(200).body(myOrder);
     }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MyUserService {
+
     private final MyUserRepository myUserRepository;
     public List<MyUser> getAllUsers(){
         List<MyUser> allUsers=myUserRepository.findAll();

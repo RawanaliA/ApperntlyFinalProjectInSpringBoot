@@ -15,34 +15,32 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class MyUserController {
+
     private  final MyUserService myUserService;
+
     @GetMapping("/get")
     private ResponseEntity allusers(){
         List<MyUser> allUsers=  myUserService.getAllUsers();
-
         return ResponseEntity.status(200).body(allUsers);
     }
+
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody MyUser myUser){
         myUserService.register(myUser);
         return ResponseEntity.status(200).body("User Register");
     }
-    @PostMapping("/admin")
-    public ResponseEntity admin(){
-        return ResponseEntity.status(200).body("Welcome Admin");
-    }
-    @PostMapping("/user")
-    public ResponseEntity user(){
-        return ResponseEntity.status(200).body("Welcome user");
-    }
+
+
+
     @PostMapping("/login")
     public ResponseEntity login(){
-        return ResponseEntity.status(200).body("login");
+        return ResponseEntity.status(200).body("You are Loge Inside");
     }
+
     @PostMapping("/logout")
     public ResponseEntity logout(){
         return ResponseEntity.status(200).body("logout");
     }
 }
 
-}
+

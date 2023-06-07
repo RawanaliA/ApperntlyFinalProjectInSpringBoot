@@ -32,11 +32,9 @@ public class SpringConfigration {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/user/register").permitAll()
               // .requestMatchers("/api/v1/user/**").permitAll()
-                .requestMatchers("/api/v1/user/user").hasAuthority("USER")
-                .requestMatchers("/api/v1/order /change/{myOrderId}/{status}").hasAuthority("admin")
-
-
-                .requestMatchers("/api/v1/auth/login").hasAuthority("USER")
+//                .requestMatchers("/api/v1/user").hasAuthority("USER")
+                .requestMatchers("/api/v1/order /change/{myOrderId}/{status}").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/auth/login").hasAuthority("custmer")
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutUrl("/api/v1/auth/logout")

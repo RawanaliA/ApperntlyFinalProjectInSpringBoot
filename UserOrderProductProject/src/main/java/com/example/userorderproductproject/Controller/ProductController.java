@@ -25,18 +25,23 @@ public class ProductController {
     @PostMapping("/add")
     public ResponseEntity addProduct(@Valid @RequestBody Product product  ){
         productService.addProduct(product);
-        return ResponseEntity.status(200).body("Product added");
+        return ResponseEntity.status(200).body("Product added Successfully");
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity updateProduct(@Valid @RequestBody Product product , @PathVariable Integer id){
         productService.updateProduct(product,id);
-        return ResponseEntity.status(200).body("Company Updated");
+        return ResponseEntity.status(200).body("Product Updated");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteProduct(@PathVariable Integer id){
         productService.deleteProduct(id);
-        return ResponseEntity.status(200).body("Company deleted");
+        return ResponseEntity.status(200).body("Product deleted");
+    }
+    @GetMapping("/getByid/{id}")
+    public ResponseEntity findProductById(@PathVariable Integer id){
+      Product product= productService.findProductById(id);
+        return ResponseEntity.status(200).body(product);
     }
 }

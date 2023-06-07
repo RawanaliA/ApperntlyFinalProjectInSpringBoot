@@ -15,22 +15,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-private final OrderRepository orderRepository;
-  private final ProductRepository productRepository  ;
+ private final OrderRepository orderRepository;
+ private final ProductRepository productRepository  ;
+ private final MyUserRepository myUserRepository;
 
-    public List<MyOrder> getallOrder(Integer id) {
-//
-        return orderRepository.findMyOrderByMyUserId(id);
+    //Get All user Order
+    public List<MyOrder> getAllOrders(){
+        return orderRepository.findAll();
     }
-    public void addOrder(Integer userid, MyOrder myOrder, Product product) {
-//        Product product1=productRepository.findProductById()
-        myOrder.setId(userid);
-        // ShouldTo try it
-//        myOrder.setTotalPrice(myOrder.getQuantity()* product.getPrice());
+    public List<MyOrder> getallOrder(Integer userId) {
+//
+        return orderRepository.findMyOrderByMyUserId(userId);
+    }
+    //Calculute The Total Price **The Status Already New in Model
+    public void addOrder(Integer userid, MyOrder myOrder){
+        Product product1=productRepository.findProductById(myOrder.getProduct().getId());
+        MyUser myUser=myUserRepository.findMyUserByid(userid);
+        myOrder.setMyUser(myUser);
+       myOrder.setTotalPrice(myOrder.getQuantity()* product1.getPrice());
         orderRepository.save(myOrder);
     }
-    public void updateOrder(MyOrder myOrder,Integer id,Integer userId) {
-        MyOrder oldOrder = orderRepository.findMyOrderById(id);
+    public void updateOrder(MyOrder myOrder,Integer orderId,Integer userId) {
+        MyOrder oldOrder = orderRepository.findMyOrderById(orderId);
         if (oldOrder == null) {
 
             throw new ApiExeption("Order Not found");
@@ -46,10 +52,14 @@ private final OrderRepository orderRepository;
         orderRepository.save(oldOrder);
     }
     public void deleteOrder(Integer userid,Integer orderId) {
-        MyOrder myOrder = orderRepository.findMyOrderById(userid);
-        if (myOrder.getId() == null) {
+        MyOrder myOrder = orderRepository.findMyOrderById(orderId);
+        if (myOrder == null) {
 
             throw new ApiExeption("Order Not found");
+        }
+        //هنا يشيك على الاوردر لليوزر هل هو حقه ولا لا
+        if(myOrder.getMyUser().getId()!=userid) {
+            throw new ApiExeption("This is Not Your Order");
         }
         if (myOrder.getStatus() .equals("inProgess")  || myOrder.getStatus() .equals("complete")) {
 
@@ -57,18 +67,25 @@ private final OrderRepository orderRepository;
         }
         orderRepository.delete(myOrder);
     }
-    public void changeStatus(MyOrder myOrder,Integer userId,String status) {
-        MyOrder oldOrder = orderRepository.findMyOrderById(userId);
+    public void changeStatus(Integer orderId,Integer userId,String status) {
+        MyOrder oldOrder = orderRepository.findMyOrderById(orderId);
         if (oldOrder == null) {
 
             throw new ApiExeption("Order Not found");
         }
-        if (oldOrder.getMyUser().getId() != myOrder.getId()) {
+        if (oldOrder.getMyUser().getId() != userId) {
             throw new ApiExeption("Erorre,Unauthorize");
         }
         oldOrder.setStatus(status);
 
         orderRepository.save(oldOrder);
     }
-
+    //Get MyOrder byId
+    public MyOrder findOrderById(Integer id){
+        MyOrder order=orderRepository.findMyOrderById(id);
+        if(order==null){
+            throw new ApiExeption("Sorry, We Couldn't find the Order your looking for, Try another ID!");
+        }
+        return order;
+    }
 }
